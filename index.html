@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" type="image/png" href="./favicon/icon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <title>BBS Checklist</title>
+
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+  <!-- html2canvas pour capture PNG -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="text-white min-h-screen p-4">
+  <header class="mb-6 sticky top-0 bg-black bg-opacity-80 z-50 p-4 shadow-md transition">
+    <h1 class="text-3xl font-bold text-white mb-4">Bleach Brave Souls – Items Checklist</h1>
+
+    <!-- Barre de progression -->
+    <div class="mb-2">
+      <div class="w-full bg-gray-700 h-4 rounded overflow-hidden">
+        <div id="progressBar" class="h-4 rounded bg-gradient"></div>
+      </div>
+      <p id="progressLabel" class="text-sm text-gray-300 mt-1 text-right">0/0 (0%)</p>
+    </div>
+
+    <!-- 📌 Boutons d'action -->
+    <div class="mb-6 flex flex-wrap justify-center gap-2">
+      <button onclick="setMode('default')" class="mode-button text-white px-3 py-1 rounded transition">🖌️ Mode Normal</button>
+      <button onclick="setMode('max')" class="mode-button text-white px-3 py-1 rounded transition">🌈 Max Mode</button>
+      <button onclick="setMode('spe')" class="mode-button text-white px-3 py-1 rounded transition">🔝 Quantité Mode</button>
+      <button onclick="exportCollection()" class="bg-gray-800 hover:bg-gray-900 px-3 py-1 rounded">💾 Exporter</button>
+      <button onclick="importCollection()" class="bg-gray-800 hover:bg-gray-900 text-white px-3 py-1 rounded">📥 Importer</button>
+      <button onclick="resetAll()" class="bg-gray-800 hover:bg-gray-900 px-3 py-1 rounded">🔄 Réinitialiser</button>
+    </div>
+
+    <!-- 🔍 Menus déroulants + barre de recherche -->
+    <div class="flex justify-center mb-6">
+      <div class="flex gap-2 items-center w-full max-w-4xl">
+
+        <!-- Menu Filtres -->
+        <div class="relative inline-block text-left">
+          <button id="dropdownFilterBtn" class="bg-gray-800 text-white px-4 py-2 rounded transition hover:bg-gray-600 inline-flex items-center focus:outline-none focus:ring-2 focus:ring-purple-600">
+            📂 Filtres
+          </button>
+          <div id="dropdownFilterMenu" class="hidden absolute z-10 mt-2 w-44 rounded-lg shadow-lg bg-gray-700 ring-1 ring-black ring-opacity-5">
+            <div class="py-1">
+              <button class="filter-owned-button text-left w-full px-4 py-2 text-sm text-white hover:bg-gray-600 rounded transition">🔄 Tous</button>
+              <button class="filter-owned-button text-left w-full px-4 py-2 text-sm text-white hover:bg-green-600 rounded transition">✅ Possédés</button>
+              <button class="filter-owned-button text-left w-full px-4 py-2 text-sm text-white hover:bg-red-600 rounded transition">❌ Non possédés</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Barre de recherche -->
+        <input type="text" id="search-input" placeholder="🔍 Rechercher un item..." class="bg-gray-800 text-white border border-gray-600 rounded px-4 py-2 flex-1 focus:outline-none focus:border-purple-600 focus:ring-2 focus:ring-purple-600 transition" />
+
+        <!-- Menu Affinités -->
+        <div class="relative inline-block text-left">
+          <button id="dropdownAttributeBtn" class="bg-gray-800 text-white px-4 py-2 rounded transition hover:bg-gray-600 inline-flex items-center focus:outline-none focus:ring-2 focus:ring-purple-600">
+            🎨 Affinités
+          </button>
+          <div id="dropdownAttributeMenu" class="hidden absolute z-10 mt-2 w-52 rounded-lg shadow-lg bg-gray-700 ring-1 ring-black ring-opacity-5 right-0">
+            <div class="py-1">
+              <button class="filter-attribute-button text-left w-full px-4 py-2 text-sm text-white hover:bg-gray-600 rounded transition flex items-center" data-attribute="all">
+                <img src="icons/toutes.png" alt="Toutes" class="w-5 h-5 mr-2"> Toutes
+              </button>
+              <button class="filter-attribute-button text-left w-full px-4 py-2 text-sm text-white hover:bg-green-700 rounded transition flex items-center" data-attribute="technique">
+                <img src="icons/technique.png" alt="Technique" class="w-5 h-5 mr-2"> Technique
+              </button>
+              <button class="filter-attribute-button text-left w-full px-4 py-2 text-sm text-white hover:bg-purple-900 rounded transition flex items-center" data-attribute="instinct">
+                <img src="icons/instinct.png" alt="Instinct" class="w-5 h-5 mr-2"> Instinct
+              </button>
+              <button class="filter-attribute-button text-left w-full px-4 py-2 text-sm text-white hover:bg-red-500 rounded transition flex items-center" data-attribute="force">
+                <img src="icons/force.png" alt="Force" class="w-5 h-5 mr-2"> Force
+              </button>
+              <button class="filter-attribute-button text-left w-full px-4 py-2 text-sm text-white hover:bg-blue-600 rounded transition flex items-center" data-attribute="vitesse">
+                <img src="icons/vitesse.png" alt="Vitesse" class="w-5 h-5 mr-2"> Vitesse
+              </button>
+              <button class="filter-attribute-button text-left w-full px-4 py-2 text-sm text-white hover:bg-yellow-700 rounded transition flex items-center" data-attribute="connaissance">
+                <img src="icons/connaissance.png" alt="Connaissance" class="w-5 h-5 mr-2"> Connaissance
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Grille des items -->
+  <main id="unit-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></main>
+
+  <footer class="mt-8 text-center text-sm text-white-500">
+    © <script>document.write(new Date().getFullYear());</script> BBS Checklist – Créé par Amnael & Kira.
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/units.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- Scripts dropdown -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const dropdownBtn = document.getElementById("dropdownFilterBtn");
+      const dropdownMenu = document.getElementById("dropdownFilterMenu");
+      dropdownBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        dropdownMenu.classList.toggle("hidden");
+      });
+      document.addEventListener("click", (event) => {
+        if (!dropdownBtn.contains(event.target) && !dropdownMenu.contains(event.target)) {
+          dropdownMenu.classList.add("hidden");
+        }
+      });
+
+      const dropdownAttributeBtn = document.getElementById("dropdownAttributeBtn");
+      const dropdownAttributeMenu = document.getElementById("dropdownAttributeMenu");
+      dropdownAttributeBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        dropdownAttributeMenu.classList.toggle("hidden");
+      });
+      document.addEventListener("click", (event) => {
+        if (!dropdownAttributeBtn.contains(event.target) && !dropdownAttributeMenu.contains(event.target)) {
+          dropdownAttributeMenu.classList.add("hidden");
+        }
+      });
+    });
+  </script>
+</body>
+</html>

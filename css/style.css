@@ -1,0 +1,256 @@
+h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3rem;
+  text-align: center;
+  color: white;
+  letter-spacing: 2px;
+}
+
+body {
+  position: relative;
+  font-family: 'Segoe UI', sans-serif;
+  background-image: url('https://amnaell.github.io/BBS-Checklist.github.io/css/bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: white;
+  min-height: 100vh;
+  padding-top: 160px;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  z-index: 0;
+}
+
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ✅ Cartes */
+.unit-card img {
+  max-width: 100%;
+  height: auto;
+  width: 100px;
+  margin: 0 auto;
+}
+
+.unit-card {
+  background-color: #1f2937;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: 2px solid #374151;
+  text-align: center;
+  transition: transform 0.2s ease-in-out;
+  width: 110px;
+  margin: auto;
+  position: relative;
+}
+
+/* ✅ Couleurs de bordures spécifiques par attribut */
+.unit-card.selected.border-green-500 {
+  border-color: #16a34a;
+  box-shadow: 0 0 10px #16a34a;
+  background-color: #072e13;
+}
+
+.unit-card.selected.border-purple-700 {
+  border-color: #7e22ce;
+  box-shadow: 0 0 10px #7e22ce;
+  background-color: #1e0a33;
+}
+
+.unit-card.selected.border-red-600 {
+  border-color: #dc2626;
+  box-shadow: 0 0 10px #dc2626;
+  background-color: #3b0a0a;
+}
+
+.unit-card.selected.border-blue-500 {
+  border-color: #3b82f6;
+  box-shadow: 0 0 10px #3b82f6;
+  background-color: #0c1d35;
+}
+
+.unit-card.selected.border-yellow-500 {
+  border-color: #eab308;
+  box-shadow: 0 0 10px #eab308;
+  background-color: #3b2f05;
+}
+
+.unit-card.selected.border-yellow-400 {
+  border-color: #facc15;
+  box-shadow: 0 0 10px #facc15;
+  background-color: #3b2f05;
+}
+
+/* ✅ Max mode avec arrondi */
+.unit-card.max {
+  border: 4px solid;
+  border-image: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet) 1;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+  background-color: #1a1a1a; /* optionnel : fond plus foncé */
+  animation: rainbowBorder 3s linear infinite;
+}
+
+@keyframes rainbowBorder {
+  0% { border-image: linear-gradient(0deg, red, orange, yellow, green, blue, indigo, violet) 1; }
+  25% { border-image: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet) 1; }
+  50% { border-image: linear-gradient(180deg, red, orange, yellow, green, blue, indigo, violet) 1; }
+  75% { border-image: linear-gradient(270deg, red, orange, yellow, green, blue, indigo, violet) 1; }
+  100% { border-image: linear-gradient(360deg, red, orange, yellow, green, blue, indigo, violet) 1; }
+}
+
+.unit-card .spe-badge {
+  position: absolute;
+  top: -4px;       /* la remonter légèrement */
+  right: -4px;     /* la décaler un peu vers la gauche */
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 2px black;
+  border-radius: 50%;
+  background: black;                    /* fond noir classique */
+  border: 2px solid #ffffffcc;          /* léger contour blanc semi-transparent */
+  box-sizing: border-box;
+}
+
+.unit-card:hover {
+  transform: scale(1.05);
+}
+
+/* ✅ Unit cards : désaturées si non possédées */
+.unit-card:not(.selected) {
+  filter: brightness(0.4) grayscale(60%);
+  opacity: 0.7;
+  transition: filter 0.2s, opacity 0.2s;
+}
+
+.unit-card.selected {
+  filter: none;
+  opacity: 1;
+}
+
+/* ✅ Grille des cartes */
+#unit-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 0.75rem;
+  justify-items: center;
+}
+
+/* ✅ Uniformisation arrondi boutons */
+.mode-button,
+.filter-owned-button,
+#dropdownFilterBtn,
+#dropdownAttributeBtn,
+#dropdownFilterMenu button,
+#dropdownAttributeMenu button {
+  border-radius: 0.5rem;
+}
+
+/* ✅ Boutons de mode */
+.mode-button.active {
+  outline: 2px solid white;
+  opacity: 1 !important;
+  transform: scale(1.05);
+}
+
+.mode-button {
+  background-color: #4b5563;
+  color: white;
+  opacity: 1;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.mode-button:hover:nth-of-type(1) { background-color: #2563eb; }
+.mode-button:hover:nth-of-type(2) { background-color: #7e22ce; }
+.mode-button:hover:nth-of-type(3) { background-color: #facc15; color: black; }
+.mode-button:hover:nth-of-type(4) { background-color: #f43f5e; }
+
+.mode-button.active:nth-of-type(1) { background-color: #2563eb; }
+.mode-button.active:nth-of-type(2) { background-color: #7e22ce; }
+.mode-button.active:nth-of-type(3) { background-color: #facc15; color: black; }
+.mode-button.active:nth-of-type(4) { background-color: #f43f5e; }
+
+/* ✅ Boutons filtres possédés */
+.filter-owned-button {
+  background-color: #4b5563;
+  color: white;
+  opacity: 1;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.filter-owned-button:nth-of-type(1):hover,
+.filter-owned-button.active:nth-of-type(1) {
+  background-color: #2563eb;
+}
+
+.filter-owned-button:nth-of-type(2):hover,
+.filter-owned-button.active:nth-of-type(2) {
+  background-color: #16a34a;
+}
+
+.filter-owned-button:nth-of-type(3):hover,
+.filter-owned-button.active:nth-of-type(3) {
+  background-color: #dc2626;
+}
+
+.filter-owned-button.active {
+  outline: 2px solid white;
+  transform: scale(1.05);
+}
+
+/* ✅ ProgressBar */
+#progressBar {
+  height: 1rem;
+  border-radius: 0.5rem;
+  transition: width 0.8s ease-in-out;
+  background: linear-gradient(270deg, #a855f7, #7e22ce, #a855f7);
+  background-size: 600% 600%;
+  animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ✅ Barre de recherche */
+#searchInput {
+  background-color: #1f2937;
+  color: white;
+  border: 2px solid #374151;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  max-width: 400px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#searchInput::placeholder {
+  color: #9ca3af;
+}
+
+#searchInput:focus {
+  outline: none;
+  border-color: #a855f7;
+  box-shadow: 0 0 10px #a855f7;
+}
+
+/* ✅ Dropdown menus et autres styles déjà inclus… */
