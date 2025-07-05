@@ -1,15 +1,12 @@
 // 📦 Chargement des états depuis localStorage
-let state = JSON.parse(localStorage.getItem("bbs_item_state")) || {};
-function saveState() {
-  localStorage.setItem("bbs_item_state", JSON.stringify(state));
-}
+let state = JSON.parse(localStorage.getItem("bbs_items_state")) || {};
 let ownedFilter = "all";
 let attributeFilter = "all";
 let searchTerm = "";
 
 // 🔁 Sauvegarde
 function saveState() {
-  localStorage.setItem("bbs_unit_state", JSON.stringify(state));
+  localStorage.setItem("bbs_items_state", JSON.stringify(state));
 }
 
 // 🎯 Gestion du mode actif
@@ -187,7 +184,7 @@ function exportCollection() {
 
   const a = document.createElement("a");
   a.href = url;
-  a.download = "bbs_collection.json";
+  a.download = "bbs_items_collection.json";
   a.click();
   URL.revokeObjectURL(url);
 }
